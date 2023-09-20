@@ -19,11 +19,15 @@ class Api {
     };
 
     try {
-      const response = await axios.get(url, config);
-      return response.data;
+      const { data } = await axios.get(url, config);
+      return data;
+
     } catch (err) {
+      if (err.response) console.log(`status code: ${err.response.status}`);
+      console.log(`error: ${err.message}`);
       return noData;
     }
+
   };
 
   apiPostRequest = async (path, payload) => {
@@ -35,10 +39,12 @@ class Api {
     };
 
     try {
-      const response = await axios.post(url, payload, config);
-      return response.data;
+      const { data } = await axios.post(url, payload, config);
+      return data;
+
     } catch (err) {
-      console.log(err.response);
+      if (err.response) console.log(`status code: ${err.response.status}`);
+      console.log(`error: ${err.message}`);
       return noData;
     }
   };
@@ -61,3 +67,4 @@ class Api {
 }
 
 exports.Api = Api;
+

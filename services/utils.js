@@ -36,28 +36,21 @@ const getPageSource = async (url) => {
   const config = {
     ...getProxyForAxios(),
     headers: { 'User-Agent': userAgent },
-    timeout: timeoutGet,
+    timeout: timeoutGet
   };
 
   try {
-    const source = await axios.get(url, config)
-      .then(await extraWaitForPromise(extraDelay))
-      .then((response) => {
-        if (response.status === 200) {
-          return response.data;
-        }
-
-        console.log('response.status (no data): ', response.status); // ?
-        return noData;
-      })
-      .catch((error) => {
-        console.log(error); // ?
-        return noData;
-      });
-
-    return source;
-  } catch (err) {
+    const { status, data } = await axios.get(url, config);
+    if (status === 200) return data;
     return noData;
+
+  } catch (err) {
+    if (err.response) console.log(`status code: ${err.response.status}`);
+    console.log(`error: ${err.message}`);
+    return noData;
+
+  } finally {
+    await extraWaitForPromise(extraDelay);
   }
 };
 
@@ -93,4 +86,3 @@ exports.getCurrentTime = getCurrentTime;
 exports.getPageSource = getPageSource;
 exports.findObjectsWithFields = findObjectsWithFields;
 exports.printInfo = printInfo;
-
