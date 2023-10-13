@@ -10,6 +10,6 @@ News Collector
 Использованные технологии: React, Express, MongoDB.\
 Выложено на GitHub чисто для портфолио.
 
-## Скриншоты
-![screenshot](screenshots/2023-10-13_13.14.21_localhost.png)
-![screenshot](screenshots/2023-10-13_13.15.03_localhost.png)
+## Скрины фронта (desktop & mobile)
+
+![screenshot](screenshots/dark.png)
