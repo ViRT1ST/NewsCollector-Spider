@@ -15,5 +15,5 @@ News Collector
 ![screenshot](screenshots/2023-10-13_13.14.33_localhost.png)
 
 ## Мобильный вид:
-![screenshot](screenshots/2023-10-13_13.15.03_localhost)
-![screenshot](screenshots/2023-10-13_13.15.56_localhost)
+![screenshot](screenshots/2023-10-13_13.15.03_localhost.png)
+![screenshot](screenshots/2023-10-13_13.15.56_localhost.png)
