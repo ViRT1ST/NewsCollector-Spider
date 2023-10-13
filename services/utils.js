@@ -81,8 +81,8 @@ const printInfo = (string, lineAfterString = false) => {
   }
 };
 
-exports.extraWaitForPromise = extraWaitForPromise;
-exports.getCurrentTime = getCurrentTime;
-exports.getPageSource = getPageSource;
-exports.findObjectsWithFields = findObjectsWithFields;
-exports.printInfo = printInfo;
+module.exports.extraWaitForPromise = extraWaitForPromise;
+module.exports.getCurrentTime = getCurrentTime;
+module.exports.getPageSource = getPageSource;
+module.exports.findObjectsWithFields = findObjectsWithFields;
+module.exports.printInfo = printInfo;

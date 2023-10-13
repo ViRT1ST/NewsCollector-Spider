@@ -66,5 +66,5 @@ class Api {
 
 }
 
-exports.Api = Api;
+module.exports.Api = Api;
 

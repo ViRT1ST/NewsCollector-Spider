@@ -178,5 +178,5 @@ const parseArticles = async (subscriptions) => {
   return articles;
 };
 
-exports.getPageTitle = getPageTitle;
-exports.parseArticles = parseArticles;
+module.exports.getPageTitle = getPageTitle;
+module.exports.parseArticles = parseArticles;
