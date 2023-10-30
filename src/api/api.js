@@ -1,6 +1,7 @@
 const axios = require('axios');
 
 const constants = require('../config/constants');
+
 const { API_BASE, TIMEOUT_GET, TIMEOUT_POST, JWT_TOKEN, NO_DATA } = constants;
 
 class Api {
@@ -8,14 +9,13 @@ class Api {
   static handleError(error) {
     if (error.response) {
       console.log(`status code: ${error.response.status}`);
-      // console.log(error.response.data);
     }
 
     console.log(`error: ${error.message}`);
     return NO_DATA;
   }
 
-  static getConfig(isGetRequest) {
+  static getRequestConfig(isGetRequest) {
     return {
       timeout: isGetRequest ? TIMEOUT_GET : TIMEOUT_POST,
       headers: {
@@ -28,7 +28,7 @@ class Api {
   static async getRequest(path) {
     try {
       const url = `${API_BASE}${path}`;
-      const config = this.getConfig(true);
+      const config = this.getRequestConfig(true);
 
       const { data } = await axios.get(url, config);
 
@@ -41,7 +41,7 @@ class Api {
   static async postRequest(path, payload) {
     try {
       const url = `${API_BASE}${path}`;
-      const config = this.getConfig(false);
+      const config = this.getRequestConfig(false);
 
       const response = axios.post(url, payload, config);
 

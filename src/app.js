@@ -1,10 +1,9 @@
-const { extraWaitForPromise, printInfo } = require('./services/utils');
-const { parseArticles } = require('./services/parsing');
-const Api = require('./services/api');
-
 const constants = require('./config/constants');
-const { LOOP_DELAY } = constants;
+const { extraWaitForPromise, printInfo } = require('./utils/utils');
+const { parseSources } = require('./parsing/sources');
+const Api = require('./api/api');
 
+const { LOOP_DELAY } = constants;
 
 const printTitles = (articles) => {
   articles.forEach(({ site, section, title }) => {
@@ -23,18 +22,18 @@ const sendArticles = async (articles) => {
   }
 };
 
-const сollect = async () => {
+const сollectArticles = async () => {
   try {
     const sources = await Api.getSources();
     const dbUrls = await Api.getArticlesUrls();
 
-    const parsedArticles = await parseArticles(sources);
+    const parsedArticles = await parseSources(sources);
     const newArticles = parsedArticles.filter(({ url }) => !dbUrls.includes(url));
 
     printTitles(newArticles);
     printQty(newArticles);
-    await sendArticles(newArticles);
 
+    await sendArticles(newArticles);
   } catch (error) {
     console.log(error.message);
   }
@@ -42,7 +41,7 @@ const сollect = async () => {
 
 const run = async () => {
   while (true) {
-    await сollect()
+    await сollectArticles()
       .then(() => printInfo(`Waiting: ${LOOP_DELAY / 1000 / 60} min.`, true))
       .then(await extraWaitForPromise(LOOP_DELAY))
       .then(() => process.stdout.write('\x1Bc'));

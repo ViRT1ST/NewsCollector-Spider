@@ -35,6 +35,7 @@
     "quote-props": ["error", "consistent", { "keywords": true }],
     "prefer-destructuring": "off",
     "no-await-in-loop": "off",
-    "no-constant-condition": "off"
+    "no-constant-condition": "off",
+    "no-unused-expressions": "off"
   }
 }
