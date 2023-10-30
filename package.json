@@ -1,17 +1,16 @@
 {
   "name": "news-collector-spider",
-  "version": "1.0.0",
+  "version": "1.5.0",
   "description": "",
-  "main": "main.js",
+  "main": "app.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "node src/app.js"
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
     "axios": "^1.4.0",
     "cheerio": "^1.0.0-rc.12",
-    "dotenv": "^16.3.1",
     "html-entities": "^2.4.0",
     "replace-special-characters": "^1.2.7",
     "rss-parser": "^3.13.0",

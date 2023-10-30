@@ -1,0 +1,15 @@
+===============================================
+Testing functions
+===============================================
+
+https://api.ipify.org/?format=json
+https://httpbin.org/headers
+https://httpstat.us/403
+
+===============================================
+Axios 
+===============================================
+
+Using version: npm i socks-proxy-agent@6.1.1
+https://scrapfly.io/blog/how-to-use-proxies-nodejs-axios/
+

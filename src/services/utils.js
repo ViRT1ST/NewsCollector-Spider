@@ -1,15 +1,17 @@
-require('dotenv').config();
-
 const axios = require('axios');
 const SocksProxyAgent = require('socks-proxy-agent');
 
-const isProxyUsing = process.env.IS_PROXY_USING === 'true';
-const proxyString = process.env.PROXY_STRING;
-const userAgent = process.env.USER_AGENT;
-const noData = process.env.NO_DATA;
-const logLine = process.env.LOG_LINE;
-const timeoutGet = parseInt(process.env.TIMEOUT_GET, 10);
-const extraDelay = parseInt(process.env.EXTRA_DELAY, 10);
+const constants = require('../config/constants');
+
+const {
+  IS_PROXY_USING,
+  PROXY_STRING,
+  USER_AGENT,
+  LOG_LINE,
+  NO_DATA,
+  TIMEOUT_GET,
+  EXTRA_DELAY
+} = constants;
 
 const extraWaitForPromise = (ms) => {
   return new Promise((resolve) => {
@@ -22,10 +24,10 @@ const getCurrentTime = () => {
 };
 
 const getProxyForAxios = () => {
-  if (isProxyUsing) {
+  if (IS_PROXY_USING) {
     return {
-      httpAgent: new SocksProxyAgent(proxyString),
-      httpsAgent: new SocksProxyAgent(proxyString)
+      httpAgent: new SocksProxyAgent(PROXY_STRING),
+      httpsAgent: new SocksProxyAgent(PROXY_STRING)
     };
   }
 
@@ -35,22 +37,22 @@ const getProxyForAxios = () => {
 const getPageSource = async (url) => {
   const config = {
     ...getProxyForAxios(),
-    headers: { 'User-Agent': userAgent },
-    timeout: timeoutGet
+    headers: { 'User-Agent': USER_AGENT },
+    timeout: TIMEOUT_GET
   };
 
   try {
     const { status, data } = await axios.get(url, config);
     if (status === 200) return data;
-    return noData;
+    return NO_DATA;
 
   } catch (err) {
     if (err.response) console.log(`status code: ${err.response.status}`);
     console.log(`error: ${err.message}`);
-    return noData;
+    return NO_DATA;
 
   } finally {
-    await extraWaitForPromise(extraDelay);
+    await extraWaitForPromise(EXTRA_DELAY);
   }
 };
 
@@ -77,7 +79,7 @@ const printInfo = (string, lineAfterString = false) => {
     console.log(string);
   }
   if (lineAfterString) {
-    console.log(logLine);
+    console.log(LOG_LINE);
   }
 };
 

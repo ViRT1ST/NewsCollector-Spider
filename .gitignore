@@ -1,9 +1,6 @@
 # MY DATA
-node_modules
-.env
-info.txt
-subs.txt
-services/testing.js
+# .env
+# info.txt
 
 # Logs
 logs
@@ -80,7 +77,7 @@ web_modules/
 .yarn-integrity
 
 # dotenv environment variable files
-.env
+# .env
 .env.development.local
 .env.test.local
 .env.production.local

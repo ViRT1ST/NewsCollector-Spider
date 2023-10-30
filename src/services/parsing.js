@@ -1,16 +1,15 @@
-require('dotenv').config();
-
 const Parser = require('rss-parser');
 const cheerio = require('cheerio');
 const entities = require('html-entities');
 
-const { getPageSource, getCurrentTime, findObjectsWithFields, printInfo } = require('./utils');
+const { getPageSource, findObjectsWithFields, printInfo } = require('./utils');
 
-const NO_DATA = process.env.NO_DATA;
+const constants = require('../config/constants');
+const { NO_DATA } = constants;
 
-const correctArticleTitle = (title, extraPart) => {
+const correctArticleTitle = (title, removeInTitle) => {
   let result = entities.decode(title);
-  result = result.replace(extraPart, '');
+  result = result.replace(removeInTitle, '');
   result = result.replace("'", '’');
   result = result.replace("'", '’');
   result = result.replace('|', '-');
@@ -45,17 +44,17 @@ const getPageTitle = async (url) => {
     }
 
     return NO_DATA;
-  } catch (err) {
+  } catch (error) {
     return NO_DATA;
   }
 };
 
-const createFullArticle = (site, section, title, link, extra_part) => {
+const createFullArticle = (sourceId, site, section, title, link, removeInTitle) => {
   return {
+    sourceId,
     site,
     section,
-    date: getCurrentTime(),
-    title: correctArticleTitle(title, extra_part),
+    title: correctArticleTitle(title, removeInTitle),
     url: correctArticleUrl(link),
   };
 };
@@ -63,13 +62,13 @@ const createFullArticle = (site, section, title, link, extra_part) => {
 
 const getArticlesFromRss = async (subscription) => {
   try {
-    const { site, section, url, extra_part } = subscription;
+    const { _id: sourceId, site, section, url, removeInTitle } = subscription;
 
     const source = await getPageSource(url);
     const feed = await new Parser().parseString(source);
 
     const articles = feed.items.map(({ title, link }) => {
-      return createFullArticle(site, section, title, link, extra_part);
+      return createFullArticle(sourceId, site, section, title, link, removeInTitle);
     });
 
     return articles;
@@ -80,7 +79,8 @@ const getArticlesFromRss = async (subscription) => {
 
 const getArticlesFromHtml = async (subscription, custom = null) => {
   try {
-    const { site, section, url, regex, extra_part } = subscription;
+    const { _id: sourceId, site, section, url, regex, removeInTitle } = subscription;
+
 
     const source = await getPageSource(url);
     const $ = cheerio.load(source);
@@ -109,7 +109,7 @@ const getArticlesFromHtml = async (subscription, custom = null) => {
     ];
 
     const articles = uniqueLinks.map(({ title, link }) => {
-      return createFullArticle(site, section, title, link, extra_part);
+      return createFullArticle(sourceId, site, section, title, link, removeInTitle);
     });
 
     return articles;
@@ -120,7 +120,8 @@ const getArticlesFromHtml = async (subscription, custom = null) => {
 
 const getArticlesFromKwork = async (subscription) => {
   try {
-    const { site, section, url, extra_part } = subscription;
+    const { _id: sourceId, site, section, url, removeInTitle } = subscription;
+
 
     const kworkPage = await getPageSource(url);
     const jsonText = kworkPage.split('window.stateData=')[1].split(';</script>')[0];
@@ -132,7 +133,7 @@ const getArticlesFromKwork = async (subscription) => {
     const articles = foundObjects.map(({ name, id }) => {
       const title = name;
       const link = `https://kwork.ru/projects/${id}`;
-      return createFullArticle(site, section, title, link, extra_part);
+      return createFullArticle(sourceId, site, section, title, link, removeInTitle);
     });
 
     return articles;
@@ -148,26 +149,26 @@ const parseArticles = async (subscriptions) => {
   for (let i = 0; i < subscriptions.length; i += 1) {
     const sub = subscriptions[i];
 
-    const { parsing_type, site, section } = sub;
+    const { parsingMethod, site, section } = sub;
 
     printInfo(`Parsing: [${site}: ${section}]`, false);
 
-    if (parsing_type === 'rss') {
+    if (parsingMethod === 'rss') {
       const fromRss = await getArticlesFromRss(sub);
       articles = [...articles, ...fromRss];
     }
 
-    if (parsing_type === 'html') {
+    if (parsingMethod === 'html') {
       const fromHtml = await getArticlesFromHtml(sub);
       articles = [...articles, ...fromHtml];
     }
 
-    if (parsing_type === 'tengri') {
+    if (parsingMethod === 'tengri') {
       const fromTengri = await getArticlesFromHtml(sub, 'tengri');
       articles = [...articles, ...fromTengri];
     }
 
-    if (parsing_type === 'kwork') {
+    if (parsingMethod === 'kwork') {
       const fromKwork = await getArticlesFromKwork(sub);
       articles = [...articles, ...fromKwork];
     }
