@@ -16,7 +16,7 @@ const printQty = (articles) => {
 };
 
 const sendArticles = async (articles) => {
-  if (articles.length > 0) {
+  if (articles.length !== 0) {
     const response = await Api.sendArticles(articles);
     printInfo(`Successful sending: ${response.success}`, false);
   }

@@ -10,6 +10,5 @@ https://httpstat.us/403
 Axios 
 ===============================================
 
-Using version: npm i socks-proxy-agent@6.1.1
+Plugin version: socks-proxy-agent@6.1.1
 https://scrapfly.io/blog/how-to-use-proxies-nodejs-axios/
-
