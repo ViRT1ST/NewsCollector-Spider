@@ -20,7 +20,7 @@ const parseSources = async (sources) => {
       articles = [...articles, ...fromRss];
     }
 
-    if (parsingMethod.match(/^(html|tengri)$/)) {
+    if (parsingMethod.match(/^(html)$/)) {
       const fromHtml = await getArticlesFromHtml(source);
       articles = [...articles, ...fromHtml];
     }

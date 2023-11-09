@@ -5,7 +5,7 @@ const jsdom = require('jsdom');
 
 const constants = require('../config/constants');
 const { extraWaitForPromise, findObjectsWithFields } = require('../utils/utils');
-const { createFullArticle, correctArticleUrl } = require('./corrections');
+const { createFullArticle, correctArticleTitle, correctArticleUrl } = require('./corrections');
 
 const {
   IS_PROXY_USING, PROXY_STRING, USER_AGENT, NO_DATA, TIMEOUT_GET, EXTRA_DELAY
@@ -72,7 +72,14 @@ const getArticlesFromRss = async (subscription) => {
 
 const getArticlesFromHtml = async (subscription) => {
   try {
-    const { _id: sourceId, site, section, url, regex, removeInTitle } = subscription;
+    const {
+      _id: sourceId,
+      site,
+      section,
+      url,
+      regex,
+      removeInTitle
+    } = subscription;
 
     const source = await getPageSource(url);
 
@@ -84,7 +91,7 @@ const getArticlesFromHtml = async (subscription) => {
     const allLinks = anchorElements.map((item) => {
       const data = {
         title: item.textContent,
-        link: item.getAttribute('href')
+        link: item.href
       };
 
       if (item.hasAttribute('title')) {
@@ -92,18 +99,22 @@ const getArticlesFromHtml = async (subscription) => {
       }
 
       if (data.link.startsWith('/')) {
-        data.link = `${url}${data.link.slice(1)}`;
+        data.link = `${new URL(url).origin}${data.link}`;
       }
 
       return data;
     });
 
     const goodLinks = allLinks.filter(({ title, link }) => {
-      return title && !title.includes('\n') && link && link.match(regex);
+      // filter 'Bid now' is temporal fix for freelancer.net
+      return link && link.match(regex) && !title.includes('Bid now');
     });
 
     const correctedLinks = goodLinks.map(({ title, link }) => {
-      return { title, link: correctArticleUrl(link) };
+      return {
+        title: correctArticleTitle(title),
+        link: correctArticleUrl(link)
+      };
     });
 
     const uniqueLinks = [
@@ -111,7 +122,14 @@ const getArticlesFromHtml = async (subscription) => {
     ];
 
     const articles = uniqueLinks.map(({ title, link }) => {
-      return createFullArticle(sourceId, site, section, title, link, removeInTitle);
+      return createFullArticle(
+        sourceId,
+        site,
+        section,
+        title,
+        link,
+        removeInTitle
+      );
     });
 
     return articles;

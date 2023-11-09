@@ -7,9 +7,10 @@ const { NO_DATA } = constants;
 const correctArticleTitle = (title, removeInTitle) => {
   let result = entities.decode(title);
   result = result.replace(removeInTitle, '');
-  result = result.replace("'", '’');
-  result = result.replace("'", '’');
-  result = result.replace('|', '-');
+  result = result.replaceAll("'", '’');
+  result = result.replaceAll("'", '’');
+  result = result.replaceAll('|', '-');
+  result = result.replaceAll('\n', '');
   result = result.trim();
 
   if (title.match(/^.?(node|express|api).?$/g)) {
