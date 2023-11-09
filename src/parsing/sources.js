@@ -22,7 +22,6 @@ const parseSources = async (sources) => {
 
     if (parsingMethod.match(/^(html|tengri)$/)) {
       const fromHtml = await getArticlesFromHtml(source);
-      console.log(fromHtml.length);
       articles = [...articles, ...fromHtml];
     }
 

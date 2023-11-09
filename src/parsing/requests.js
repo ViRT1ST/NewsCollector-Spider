@@ -92,7 +92,7 @@ const getArticlesFromHtml = async (subscription) => {
       }
 
       if (data.link.startsWith('/')) {
-        data.link = `${url}${data.link}`.replace('//', '/');
+        data.link = `${url}${data.link.slice(1)}`;
       }
 
       return data;
