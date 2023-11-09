@@ -11,6 +11,11 @@ const correctArticleTitle = (title, removeInTitle) => {
   result = result.replace("'", '’');
   result = result.replace('|', '-');
   result = result.trim();
+
+  if (title.match(/^.?(node|express|api).?$/g)) {
+    result = `!!! ${result}`;
+  }
+
   return result.length > 3 ? result : NO_DATA;
 };
 

@@ -1,7 +1,7 @@
 const SocksProxyAgent = require('socks-proxy-agent');
 const axios = require('axios');
-const cheerio = require('cheerio');
 const Parser = require('rss-parser');
+const jsdom = require('jsdom');
 
 const constants = require('../config/constants');
 const { extraWaitForPromise, findObjectsWithFields } = require('../utils/utils');
@@ -10,6 +10,8 @@ const { createFullArticle, correctArticleUrl } = require('./corrections');
 const {
   IS_PROXY_USING, PROXY_STRING, USER_AGENT, NO_DATA, TIMEOUT_GET, EXTRA_DELAY
 } = constants;
+
+const { JSDOM } = jsdom;
 
 const handleAxiosError = (error) => {
   if (error.response) {
@@ -68,22 +70,32 @@ const getArticlesFromRss = async (subscription) => {
   }
 };
 
-const getArticlesFromHtml = async (subscription, custom = null) => {
+const getArticlesFromHtml = async (subscription) => {
   try {
     const { _id: sourceId, site, section, url, regex, removeInTitle } = subscription;
 
     const source = await getPageSource(url);
-    const $ = cheerio.load(source);
 
-    const allLinks = $('a').toArray().map((item) => {
-      return {
-        title: custom === 'tengri'
-          ? item.children[0].data
-          : item.attribs.title,
-        link: custom === 'tengri'
-          ? `https://tengrinews.kz${item.attribs.href}`
-          : item.attribs.href
+    const dom = new JSDOM(source);
+    const document = dom.window.document;
+
+    const anchorElements = Array.from(document.querySelectorAll('a'));
+
+    const allLinks = anchorElements.map((item) => {
+      const data = {
+        title: item.textContent,
+        link: item.getAttribute('href')
       };
+
+      if (item.hasAttribute('title')) {
+        data.title = item.getAttribute('title');
+      }
+
+      if (data.link.startsWith('/')) {
+        data.link = `${url}${data.link}`.replace('//', '/');
+      }
+
+      return data;
     });
 
     const goodLinks = allLinks.filter(({ title, link }) => {
