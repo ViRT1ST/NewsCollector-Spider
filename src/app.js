@@ -1,6 +1,7 @@
 const constants = require('./config/constants');
-const { extraWaitForPromise, printInfo } = require('./utils/utils');
-const { parseSources } = require('./parsing/sources');
+const parseSources = require('./parsing/sources');
+const { printInfo, extraWaitForPromise } = require('./utils/utils');
+
 const Api = require('./api/api');
 
 const { LOOP_DELAY } = constants;

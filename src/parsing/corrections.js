@@ -20,7 +20,7 @@ const correctArticleTitle = (title, removeInTitle) => {
   return result.length > 3 ? result : NO_DATA;
 };
 
-const correctArticleUrl = (url) => {
+const correctArticleLink = (url) => {
   let result = url;
   result = result.includes('dtf.ru') ? result.split('-')[0] : result;
   result = result.includes('?') ? result.split('?')[0] : result;
@@ -29,18 +29,20 @@ const correctArticleUrl = (url) => {
   return result;
 };
 
-const createFullArticle = (sourceId, site, section, title, link, removeInTitle) => {
+const createFullArticle = (sixFieldsObj) => {
+  const { sourceId, site, section, title, link, removeInTitle } = sixFieldsObj;
+
   return {
     sourceId,
     site,
     section,
     title: correctArticleTitle(title, removeInTitle),
-    url: correctArticleUrl(link),
+    url: correctArticleLink(link),
   };
 };
 
 module.exports = {
   correctArticleTitle,
-  correctArticleUrl,
+  correctArticleLink,
   createFullArticle
 };
