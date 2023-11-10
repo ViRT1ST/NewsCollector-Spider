@@ -59,9 +59,12 @@ const getPageSource = async (url) => {
   }
 };
 
-const printInfo = (string, lineAfterString = false) => {
-  string && console.log(string);
-  lineAfterString && console.log(LOG_LINE);
+const printInfo = (string) => {
+  console.log(string);
+};
+
+const printSeparator = () => {
+  console.log(LOG_LINE);
 };
 
 const findObjectsWithFields = (object, fields) => {
@@ -90,6 +93,7 @@ module.exports = {
   extraWaitForPromise,
   getPageSource,
   printInfo,
+  printSeparator,
   findObjectsWithFields
 };
 

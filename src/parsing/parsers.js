@@ -7,12 +7,12 @@ const corrections = require('./corrections');
 const rssParser = new Parser();
 const { JSDOM } = jsdom;
 
-const getArticlesFromRss = async (subscription) => {
-  const { _id: sourceId, site, section, url, removeInTitle } = subscription;
+const getArticlesFromRss = async (source) => {
+  const { site, section, url, removeInTitle, _id: sourceId } = source;
 
   try {
-    const source = await utils.getPageSource(url);
-    const feed = await rssParser.parseString(source);
+    const pageSource = await utils.getPageSource(url);
+    const feed = await rssParser.parseString(pageSource);
 
     const articles = feed.items.map(({ title, link }) => {
       return corrections.createFullArticle({
@@ -31,20 +31,13 @@ const getArticlesFromRss = async (subscription) => {
   }
 };
 
-const getArticlesFromHtml = async (subscription) => {
-  const {
-    site,
-    section,
-    url,
-    regex,
-    removeInTitle,
-    _id: sourceId,
-  } = subscription;
+const getArticlesFromHtml = async (source) => {
+  const { site, section, url, regex, removeInTitle, _id: sourceId } = source;
 
   try {
-    const source = await utils.getPageSource(url);
+    const pageSource = await utils.getPageSource(url);
 
-    const dom = new JSDOM(source);
+    const dom = new JSDOM(pageSource);
     const document = dom.window.document;
 
     const anchorElements = Array.from(document.querySelectorAll('a'));
@@ -94,12 +87,12 @@ const getArticlesFromHtml = async (subscription) => {
   }
 };
 
-const getArticlesFromKwork = async (subscription) => {
-  const { site, section, url, removeInTitle, _id: sourceId } = subscription;
+const getArticlesFromKwork = async (source) => {
+  const { site, section, url, removeInTitle, _id: sourceId } = source;
 
   try {
-    const kworkPage = await utils.getPageSource(url);
-    const jsonText = kworkPage
+    const pageSource = await utils.getPageSource(url);
+    const jsonText = pageSource
       .split('window.stateData=')[1]
       .split(';</script>')[0];
 

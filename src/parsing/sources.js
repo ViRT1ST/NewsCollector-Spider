@@ -1,31 +1,25 @@
-const { printInfo } = require('../utils/utils');
+const { printInfo, printSeparator } = require('../utils/utils');
 const parsers = require('./parsers');
+
+const parsingMethods = {
+  rss: parsers.getArticlesFromRss,
+  html: parsers.getArticlesFromHtml,
+  kwork: parsers.getArticlesFromKwork
+};
 
 const parseSources = async (sources) => {
   let articles = [];
 
   for (let i = 0; i < sources.length; i += 1) {
-    const { parsingMethod, site, section } = sources[i];
+    const { site, section, parsingMethod } = sources[i];
 
-    printInfo(`Parsing: [${site}: ${section}]`, false);
+    printInfo(`Parsing: [${site}: ${section}]`);
 
-    if (parsingMethod === 'rss') {
-      const fromRss = await parsers.getArticlesFromRss(sources[i]);
-      articles = articles.concat(fromRss);
-    }
-
-    if (parsingMethod === 'html') {
-      const fromHtml = await parsers.getArticlesFromHtml(sources[i]);
-      articles = articles.concat(fromHtml);
-    }
-
-    if (parsingMethod === 'kwork') {
-      const fromKwork = await parsers.getArticlesFromKwork(sources[i]);
-      articles = articles.concat(fromKwork);
-    }
+    const fromSource = await parsingMethods[parsingMethod](sources[i]);
+    articles = articles.concat(fromSource);
   }
 
-  printInfo(null, true);
+  printSeparator();
   return articles;
 };
 
