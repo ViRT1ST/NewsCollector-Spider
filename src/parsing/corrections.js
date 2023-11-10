@@ -29,7 +29,7 @@ const correctArticleLink = (url) => {
   return result;
 };
 
-const createFullArticle = (sixFieldsObj) => {
+const createArticle = (sixFieldsObj) => {
   const { sourceId, site, section, title, link, removeInTitle } = sixFieldsObj;
 
   return {
@@ -44,5 +44,5 @@ const createFullArticle = (sixFieldsObj) => {
 module.exports = {
   correctArticleTitle,
   correctArticleLink,
-  createFullArticle
+  createArticle
 };

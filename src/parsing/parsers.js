@@ -15,13 +15,8 @@ const getArticlesFromRss = async (source) => {
     const feed = await rssParser.parseString(pageSource);
 
     const articles = feed.items.map(({ title, link }) => {
-      return corrections.createFullArticle({
-        sourceId,
-        site,
-        section,
-        title,
-        link,
-        removeInTitle
+      return corrections.createArticle({
+        sourceId, site, section, title, link, removeInTitle
       });
     });
 
@@ -40,27 +35,18 @@ const getArticlesFromHtml = async (source) => {
     const dom = new JSDOM(pageSource);
     const document = dom.window.document;
 
-    const anchorElements = Array.from(document.querySelectorAll('a'));
-
-    const allLinks = anchorElements.map((item) => {
-      const data = {
-        title: item.textContent,
-        link: item.href
+    const links = Array.from(document.querySelectorAll('a')).map((item) => {
+      return {
+        title: item.hasAttribute('title')
+          ? item.getAttribute('title')
+          : item.textContent,
+        link: item.href.startsWith('/')
+          ? `${new URL(url).origin}${item.href}`
+          : item.href
       };
-
-      if (item.hasAttribute('title')) {
-        data.title = item.getAttribute('title');
-      }
-
-      if (data.link.startsWith('/')) {
-        data.link = `${new URL(url).origin}${data.link}`;
-      }
-
-      return data;
     });
 
-    const goodLinks = allLinks.filter(({ title, link }) => {
-      // filter 'Bid now' is temporal fix for freelancer.net
+    const goodLinks = links.filter(({ title, link }) => {
       return link && link.match(regex) && !title.includes('Bid now');
     });
 
@@ -76,7 +62,7 @@ const getArticlesFromHtml = async (source) => {
     ];
 
     const articles = uniqueLinks.map(({ title, link }) => {
-      return corrections.createFullArticle({
+      return corrections.createArticle({
         sourceId, site, section, title, link, removeInTitle
       });
     });
@@ -101,14 +87,12 @@ const getArticlesFromKwork = async (source) => {
     const fieldsToFind = ['name', 'id', 'user_id'];
     const foundObjects = utils.findObjectsWithFields(jsonObj, fieldsToFind);
 
-    const articles = foundObjects.map(({ name, id }) => {
-      return corrections.createFullArticle({
-        sourceId,
-        site,
-        section,
-        removeInTitle,
-        title: name,
-        link: `https://kwork.ru/projects/${id}`,
+    const articles = foundObjects.map((item) => {
+      const title = item.name;
+      const link = `https://kwork.ru/projects/${item.id}`;
+
+      return corrections.createArticle({
+        sourceId, site, section, title, link, removeInTitle
       });
     });
 
