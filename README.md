@@ -7,7 +7,7 @@ News Collector
 - Client - фронтенд на Реакте для просмотра всех новостей в единой таблице.
 - Server - rest-api для взаимодействия с БД.
 
-Использованные технологии: React, Express, MongoDB.\
+Использованные технологии: TailwindCSS, React + RTK/Q, Express, MongoDB.\
 Выложено на GitHub для портфолио.
 
 #
