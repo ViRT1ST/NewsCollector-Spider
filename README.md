@@ -1,14 +1,10 @@
-News Collector
+News Collector (Web Scraper Code)
 ==========================
 Персональный проект которым я пользуюсь для чтения новостей.
 
-Состоит из трех частей:
-- Spider - Парсер, который собирает новости с интересных мне сайтов и заносит их в БД.
-- Client - Фронтенд на для просмотра всех новостей в единой таблице.
-- Server - Бэкенд для взаимодействия с БД через запросы по REST API.
+Использованные технологии: Node.js, Next.js, TailwindCSS, Redux Toolkit, RTK Query, MongoDB
 
-Использованные технологии: TailwindCSS, React + RTK/Q, Express, MongoDB.\
-Выложено на GitHub для портфолио.
+Выложено для портфолио.
 
 #
 ![screenshot](screenshots/dark.png)

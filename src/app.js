@@ -10,6 +10,7 @@ const Api = require('./api/api');
 const { LOOP_DELAY } = constants;
 
 const printParsedArticlesInfo = (articles) => {
+
   articles.forEach(({ site, section, title }) => {
     printInfo(`[${site}: ${section}]: ${title}`);
     printSeparator();
